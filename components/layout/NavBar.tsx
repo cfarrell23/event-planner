@@ -16,14 +16,14 @@ export function NavBar() {
   const { data: session } = useSession();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/discover" className="leading-tight">
-          <span className="font-display text-lg font-extrabold tracking-tight text-brand-green">
+    <header className="sticky top-0 z-40 border-b border-border bg-background">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
+        <Link href="/discover" className="flex min-w-0 items-baseline gap-2">
+          <span className="flex-shrink-0 font-display text-lg font-extrabold tracking-tight text-brand-green">
             Week<span className="text-accent">Ahead</span>
           </span>
-          <span className="block h-0.5 w-8 rounded-full bg-accent" aria-hidden />
-          <span className="hidden text-[10px] text-muted sm:block">Great plan, just in time</span>
+          <span className="inline-block h-3 w-0.5 flex-shrink-0 rounded-full bg-accent" aria-hidden />
+          <span className="truncate text-[11px] text-muted sm:text-xs">Great plan, just in time</span>
         </Link>
 
         <div className="flex items-center gap-1 sm:gap-2">
