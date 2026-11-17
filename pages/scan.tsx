@@ -9,6 +9,7 @@ import { useScannedStore } from "@/lib/store/useScannedStore";
 import { useInterestStore } from "@/lib/store/useInterestStore";
 import { useToastStore } from "@/lib/store/useToastStore";
 import { compressImageFile, isAcceptedImageFile, titleFromFilename } from "@/lib/scanUtils";
+import { recognizePosterText, parsePosterText } from "@/lib/posterOcr";
 import { toIsoDate } from "@/lib/utils";
 import type { FieldConfidence, ScannedItem } from "@/lib/types";
 
@@ -48,28 +49,43 @@ export default function ScanPosterPage() {
       const dataUrl = await compressImageFile(file);
       setImageDataUrl(dataUrl);
 
-      // Mock extraction (no real OCR/vision integration in this hackathon build — see PRD §7
-      // fallback strategy). The title is a genuine best-guess from the filename; everything
-      // else is a placeholder flagged "needs-review" so the user corrects it before saving.
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      // Real OCR via tesseract.js (client-side, no API key) — see lib/posterOcr.ts for the
+      // text-parsing heuristics. OCR runs against the original file for best accuracy; any
+      // field it can't confidently find falls back to a placeholder flagged "needs-review".
+      let parsed: ReturnType<typeof parsePosterText> = {
+        name: null,
+        date: null,
+        time: null,
+        venue: null,
+        priceRange: null,
+        priceLabel: null,
+        bookingUrl: null,
+      };
+      try {
+        const text = await recognizePosterText(file);
+        parsed = parsePosterText(text);
+      } catch {
+        // OCR engine failed to load/run — fall through to filename-based fallback below
+        // rather than blocking the whole flow (PRD §4.3: allow manual entry on failure).
+      }
 
       setInitialValues({
-        name: titleFromFilename(file.name),
-        date: toIsoDate(new Date()),
-        time: "20:00",
-        venue: "",
+        name: parsed.name ?? titleFromFilename(file.name),
+        date: parsed.date ?? toIsoDate(new Date()),
+        time: parsed.time ?? "20:00",
+        venue: parsed.venue ?? "",
         address: "",
         eventType: "pop-up",
-        priceRange: null,
-        priceLabel: "",
-        bookingUrl: "",
+        priceRange: parsed.priceRange,
+        priceLabel: parsed.priceLabel ?? "",
+        bookingUrl: parsed.bookingUrl ?? "",
       });
       setFieldConfidence({
-        name: "confident",
-        date: "needs-review",
-        time: "needs-review",
-        venue: "needs-review",
-        priceLabel: "needs-review",
+        name: parsed.name ? "confident" : "needs-review",
+        date: parsed.date ? "confident" : "needs-review",
+        time: parsed.time ? "confident" : "needs-review",
+        venue: parsed.venue ? "confident" : "needs-review",
+        priceLabel: parsed.priceLabel ? "confident" : "needs-review",
       });
       setStage("review");
     } catch {
