@@ -1,4 +1,5 @@
 import { toIsoDate } from "./utils";
+import { buildBookingSearchUrl } from "./externalLinks";
 import type { EventListing, RestaurantListing, DayForecast } from "./types";
 
 /** Returns an ISO date string `offset` days from today. Used to keep mock data anchored to "this week". */
@@ -8,7 +9,7 @@ function dayOffset(offset: number): string {
   return toIsoDate(d);
 }
 
-export const MOCK_EVENTS: EventListing[] = [
+const RAW_MOCK_EVENTS: EventListing[] = [
   {
     id: "evt-1",
     kind: "event",
@@ -175,7 +176,12 @@ export const MOCK_EVENTS: EventListing[] = [
   },
 ];
 
-export const MOCK_RESTAURANTS: RestaurantListing[] = [
+export const MOCK_EVENTS: EventListing[] = RAW_MOCK_EVENTS.map((e) => ({
+  ...e,
+  bookingUrl: buildBookingSearchUrl(e.source, e.name, e.venue),
+}));
+
+const RAW_MOCK_RESTAURANTS: RestaurantListing[] = [
   {
     id: "res-1",
     kind: "restaurant",
@@ -285,6 +291,11 @@ export const MOCK_RESTAURANTS: RestaurantListing[] = [
     deal: { label: "Happy hour", description: "£2 off all bowls, 9-10pm." },
   },
 ];
+
+export const MOCK_RESTAURANTS: RestaurantListing[] = RAW_MOCK_RESTAURANTS.map((r) => ({
+  ...r,
+  bookingUrl: buildBookingSearchUrl(r.source, r.name, r.venue),
+}));
 
 const CONDITIONS: DayForecast["condition"][] = [
   "sunny",
