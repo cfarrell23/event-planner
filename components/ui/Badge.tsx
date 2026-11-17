@@ -2,10 +2,10 @@ import { HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-const badgeVariants = cva("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium", {
+const badgeVariants = cva("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold", {
   variants: {
     variant: {
-      default: "bg-surface-raised text-foreground border border-border",
+      default: "bg-sand text-foreground/80",
       accent: "bg-accent/15 text-accent",
       success: "bg-success/15 text-success",
       type: "bg-accent-2/15 text-accent-2",

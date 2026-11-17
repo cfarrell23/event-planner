@@ -10,7 +10,12 @@ const SwipeFeed = dynamic(() => import("@/components/SwipeFeed").then((m) => m.S
 export default function DiscoverPage() {
   return (
     <AppShell>
-      <h1 className="mb-6 text-xl font-bold text-foreground">Discover</h1>
+      <div className="mb-6 flex items-start justify-between">
+        <h1 className="text-xl font-bold text-foreground">Discover</h1>
+        <p className="hidden rotate-2 font-script text-lg text-accent sm:block" aria-hidden>
+          Good plans ahead ♡
+        </p>
+      </div>
       <SwipeFeed />
     </AppShell>
   );

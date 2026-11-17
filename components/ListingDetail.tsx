@@ -56,7 +56,7 @@ export function ListingDetail({ listing }: { listing: Listing }) {
 
   return (
     <article>
-      <div className="relative mb-5 h-56 w-full overflow-hidden rounded-2xl sm:h-72">
+      <div className="relative mb-5 h-56 w-full overflow-hidden rounded-3xl sm:h-72">
         <Image
           src={listing.imageUrl}
           alt=""
@@ -90,8 +90,8 @@ export function ListingDetail({ listing }: { listing: Listing }) {
       <p className="mb-5 text-sm leading-relaxed text-foreground/90">{listing.description}</p>
 
       {listing.deal && (
-        <div className="mb-5 rounded-xl border border-accent/30 bg-accent/10 p-3 text-sm text-foreground">
-          <p className="font-semibold text-accent">{listing.deal.label}</p>
+        <div className="mb-5 rounded-xl border border-accent-3/40 bg-accent-3/15 p-3 text-sm text-foreground">
+          <p className="font-semibold text-foreground">{listing.deal.label}</p>
           <p className="text-foreground/80">{listing.deal.description}</p>
         </div>
       )}

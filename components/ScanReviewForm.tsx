@@ -73,7 +73,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
           Title <NeedsReview field="name" />
         </span>
         <input
-          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           value={values.name}
           onChange={(e) => set("name", e.target.value)}
           placeholder="Event or venue name"
@@ -110,7 +110,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
           Venue <NeedsReview field="venue" />
         </span>
         <input
-          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           value={values.venue}
           onChange={(e) => set("venue", e.target.value)}
           placeholder="Venue name"
@@ -120,7 +120,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
       <label className="block">
         <span className="mb-1 block text-sm font-medium text-foreground">Address</span>
         <input
-          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           value={values.address}
           onChange={(e) => set("address", e.target.value)}
           placeholder="Street address, London"
@@ -139,7 +139,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
               className={cn(
                 "rounded-full border px-3 py-1.5 text-xs font-medium",
                 values.eventType === opt.value
-                  ? "border-accent bg-accent/15 text-accent"
+                  ? "border-accent bg-accent text-white"
                   : "border-border bg-surface text-foreground hover:bg-surface-raised",
               )}
             >
@@ -163,7 +163,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
               className={cn(
                 "rounded-full border px-3 py-1.5 text-xs font-medium",
                 values.priceRange === opt.value
-                  ? "border-accent-2 bg-accent-2/15 text-accent-2"
+                  ? "border-accent-2 bg-accent-2 text-white"
                   : "border-border bg-surface text-foreground hover:bg-surface-raised",
               )}
             >
@@ -178,7 +178,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
           Booking link <span className="text-muted">(optional — detected from poster, if any)</span>
         </span>
         <input
-          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground"
+          className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm text-foreground focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
           value={values.bookingUrl}
           onChange={(e) => set("bookingUrl", e.target.value)}
           placeholder="https://..."

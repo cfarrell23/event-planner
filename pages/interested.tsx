@@ -32,8 +32,10 @@ export default function InterestedPage() {
       {apiListings === null ? (
         <p className="text-sm text-muted">Loading...</p>
       ) : saved.length === 0 ? (
-        <div className="flex h-[40vh] flex-col items-center justify-center gap-2 text-center text-muted">
-          <Heart aria-hidden />
+        <div className="flex h-[40vh] flex-col items-center justify-center gap-3 text-center text-muted">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sand text-accent">
+            <Heart aria-hidden />
+          </div>
           <p className="font-medium text-foreground">Nothing saved yet</p>
           <p className="text-sm">Swipe right in Discover, or scan a poster, to save it here.</p>
         </div>

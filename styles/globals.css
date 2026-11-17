@@ -2,18 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --font-sans: "Inter", system-ui, sans-serif;
+html {
+  color-scheme: light;
 }
 
 html,
 body {
-  background-color: #0b0a10;
-  color: #f4f2f9;
+  background-color: #faf3e6;
+  color: #22261e;
 }
 
 * {
-  scrollbar-color: #2b2838 #0b0a10;
+  scrollbar-color: #e8dbc4 #faf3e6;
+}
+
+@layer base {
+  h1,
+  h2 {
+    @apply font-display;
+  }
 }
 
 .tinder-swipe-container {

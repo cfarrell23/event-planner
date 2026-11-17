@@ -33,7 +33,7 @@ export default function PlannerPage() {
   return (
     <AppShell>
       <h1 className="mb-1 flex items-center gap-2 text-xl font-bold text-foreground">
-        <CalendarDays size={20} aria-hidden /> Planner
+        <CalendarDays size={20} className="text-accent" aria-hidden /> Planner
       </h1>
       <p className="mb-6 text-sm text-muted">Plans you&apos;ve RSVP&apos;d to, day by day — this week.</p>
 
@@ -45,9 +45,9 @@ export default function PlannerPage() {
           );
 
           return (
-            <section key={date} className="rounded-2xl border border-border bg-surface p-4">
+            <section key={date} className="rounded-2xl border border-border bg-surface p-4 shadow-card">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-sm font-semibold text-foreground">{formatDisplayDate(date)}</h2>
+                <h2 className="font-display text-sm font-semibold text-foreground">{formatDisplayDate(date)}</h2>
                 {dayForecast ? (
                   <WeatherBadge forecast={dayForecast} />
                 ) : (

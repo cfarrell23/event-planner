@@ -15,7 +15,7 @@ export function Toaster() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className="rounded-full border border-border bg-surface-raised px-4 py-2 text-sm text-foreground shadow-glow"
+          className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background shadow-glow"
         >
           {t.message}
         </div>

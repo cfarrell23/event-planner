@@ -13,7 +13,7 @@ export function WeatherBadge({ forecast }: { forecast: DayForecast }) {
   const Icon = ICONS[forecast.condition];
   return (
     <div
-      className="flex items-center gap-1.5 text-xs text-muted"
+      className="flex items-center gap-1.5 rounded-full bg-sand px-2 py-1 text-xs font-medium text-foreground/70"
       title={forecast.summary}
       aria-label={`Forecast: ${forecast.summary}, ${forecast.tempC} degrees Celsius`}
     >

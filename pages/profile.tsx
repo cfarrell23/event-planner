@@ -77,9 +77,9 @@ export default function ProfilePage() {
               aria-pressed={eventTypes.includes(opt.value)}
               onClick={() => toggleType(opt.value)}
               className={cn(
-                "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+                "rounded-2xl border px-4 py-3 text-sm font-medium shadow-card transition-colors",
                 eventTypes.includes(opt.value)
-                  ? "border-accent bg-accent/15 text-accent"
+                  ? "border-accent bg-accent text-white"
                   : "border-border bg-surface text-foreground hover:bg-surface-raised",
               )}
             >
@@ -99,9 +99,9 @@ export default function ProfilePage() {
               aria-pressed={priceRange === opt.value}
               onClick={() => setPriceRange(opt.value)}
               className={cn(
-                "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+                "rounded-2xl border px-4 py-3 text-sm font-medium shadow-card transition-colors",
                 priceRange === opt.value
-                  ? "border-accent-2 bg-accent-2/15 text-accent-2"
+                  ? "border-accent-2 bg-accent-2 text-white"
                   : "border-border bg-surface text-foreground hover:bg-surface-raised",
               )}
             >

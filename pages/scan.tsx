@@ -147,8 +147,10 @@ export default function ScanPosterPage() {
       </p>
 
       {stage === "capture" && (
-        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border bg-surface p-10 text-center">
-          <Camera size={32} className="text-accent" aria-hidden />
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-accent/40 bg-surface p-10 text-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sand text-accent">
+            <Camera size={28} aria-hidden />
+          </div>
           <p className="text-sm text-muted">Take a photo of a poster, or upload an image from your device.</p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button size="lg" onClick={() => cameraInputRef.current?.click()}>

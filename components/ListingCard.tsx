@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { X, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { formatDisplayDate } from "@/lib/utils";
 import { listingHref, sourceLabel } from "@/lib/listingHelpers";
@@ -29,13 +29,14 @@ export function ListingCard({
   const href = listingHref(listing);
 
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
-      <Link href={href} className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg">
+    <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-3 shadow-card">
+      <Link href={href} className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl">
         <Image src={listing.imageUrl} alt="" fill sizes="64px" className="object-cover" unoptimized={listing.kind === "scanned"} />
       </Link>
       <Link href={href} className="min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-foreground">{listing.name}</p>
-        <p className="truncate text-xs text-muted">
+        <p className="truncate font-display text-sm font-semibold text-foreground">{listing.name}</p>
+        <p className="flex items-center gap-1 truncate text-xs text-muted">
+          <MapPin size={11} className="flex-shrink-0 text-accent" aria-hidden />
           {listing.venue} · {formatDisplayDate(listing.date)} · {listing.time}
         </p>
         <div className="mt-1.5 flex flex-wrap gap-1.5">

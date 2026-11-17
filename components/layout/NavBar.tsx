@@ -18,55 +18,70 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/discover" className="text-lg font-bold tracking-tight">
-          Week<span className="text-accent">Ahead</span>
+        <Link href="/discover" className="leading-tight">
+          <span className="font-display text-lg font-extrabold tracking-tight text-brand-green">
+            Week<span className="text-accent">Ahead</span>
+          </span>
+          <span className="block h-0.5 w-8 rounded-full bg-accent" aria-hidden />
+          <span className="hidden text-[10px] text-muted sm:block">Great plan, just in time</span>
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2" aria-label="Main navigation">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-            const active = router.pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs font-medium sm:px-3.5 sm:text-sm",
-                  active
-                    ? "bg-accent/15 text-accent"
-                    : "text-muted hover:bg-surface-raised hover:text-foreground",
-                )}
-              >
-                <Icon size={16} aria-hidden />
-                <span className="hidden sm:inline">{label}</span>
-              </Link>
-            );
-          })}
 
-          {/* Scan Poster is the "real-world capture" entry point — given a distinct, thumb-friendly
-              treatment since it's the product's secondary input mode alongside Discover. */}
-          <Link
-            href="/scan"
-            aria-label="Scan Poster"
-            title="Scan Poster"
-            className={cn(
-              "ml-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full shadow-glow transition-colors sm:h-10 sm:w-10",
-              router.pathname.startsWith("/scan")
-                ? "bg-accent text-white"
-                : "bg-accent/90 text-white hover:bg-accent",
-            )}
+        <div className="flex items-center gap-1 sm:gap-2">
+          {/* On mobile this becomes a fixed bottom tab bar; on sm+ it's an inline pill row
+              in the header. It stays a single <nav> so there is exactly one set of
+              "Main navigation" links for accessibility tools and the e2e tests. */}
+          <nav
+            className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-border bg-surface px-1 py-1.5 sm:static sm:w-auto sm:justify-end sm:gap-1 sm:border-0 sm:bg-transparent sm:p-0"
+            aria-label="Main navigation"
           >
-            <Camera size={18} aria-hidden />
-          </Link>
+            {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+              const active = router.pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={cn(
+                    "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 text-[11px] font-medium sm:flex-none sm:flex-row sm:gap-1.5 sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm",
+                    active
+                      ? "text-accent sm:bg-accent/15"
+                      : "text-muted hover:text-foreground sm:hover:bg-surface-raised",
+                  )}
+                >
+                  <Icon size={18} aria-hidden className="sm:hidden" />
+                  <Icon size={16} aria-hidden className="hidden sm:block" />
+                  <span>{label}</span>
+                </Link>
+              );
+            })}
+
+            {/* Scan Poster is the "real-world capture" entry point — given a distinct, thumb-friendly
+                treatment since it's the product's secondary input mode alongside Discover. */}
+            <Link
+              href="/scan"
+              aria-label="Scan Poster"
+              title="Scan Poster"
+              className={cn(
+                "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 sm:ml-0.5 sm:flex-none sm:h-10 sm:w-10 sm:flex-shrink-0 sm:items-center sm:justify-center sm:rounded-full sm:p-0 sm:shadow-glow",
+                router.pathname.startsWith("/scan")
+                  ? "text-accent sm:bg-accent sm:text-white"
+                  : "text-muted hover:text-foreground sm:bg-accent/90 sm:text-white sm:hover:bg-accent",
+              )}
+            >
+              <Camera size={18} aria-hidden />
+              <span className="text-[11px] font-medium sm:hidden">Scan</span>
+            </Link>
+          </nav>
 
           {session && (
             <button
               onClick={() => signOut({ callbackUrl: "/signin" })}
-              className="ml-1 flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs text-muted hover:bg-surface-raised hover:text-foreground sm:px-3.5"
+              className="flex items-center gap-1.5 rounded-full px-2.5 py-2 text-xs text-muted hover:bg-surface-raised hover:text-foreground sm:px-3.5"
               aria-label="Sign out"
             >
               <LogOut size={16} aria-hidden />
             </button>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );

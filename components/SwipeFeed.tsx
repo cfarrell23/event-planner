@@ -94,27 +94,37 @@ export function SwipeFeed() {
         </TinderCard>
       </div>
 
-      <div className="mt-6 flex items-center gap-6">
-        <Button
-          variant="secondary"
-          size="lg"
-          aria-label={`Skip ${current.name}`}
-          onClick={() => cardRef.current?.swipe("left")}
-          className="h-14 w-14 rounded-full p-0"
-        >
-          <X aria-hidden />
-        </Button>
-        <Button
-          variant="primary"
-          size="lg"
-          aria-label={`Mark ${current.name} as interested`}
-          onClick={() => cardRef.current?.swipe("right")}
-          className="h-14 w-14 rounded-full p-0"
-        >
-          <Heart aria-hidden />
-        </Button>
+      <div className="mt-6 flex items-start gap-10">
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            variant="secondary"
+            size="lg"
+            aria-label={`Skip ${current.name}`}
+            onClick={() => cardRef.current?.swipe("left")}
+            className="h-16 w-16 rounded-full p-0 text-accent"
+          >
+            <X size={26} aria-hidden />
+          </Button>
+          <span className="text-xs font-medium text-muted" aria-hidden>
+            Not for me
+          </span>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <Button
+            variant="primary"
+            size="lg"
+            aria-label={`Mark ${current.name} as interested`}
+            onClick={() => cardRef.current?.swipe("right")}
+            className="h-16 w-16 rounded-full p-0"
+          >
+            <Heart size={26} aria-hidden fill="currentColor" />
+          </Button>
+          <span className="text-xs font-medium text-muted" aria-hidden>
+            Interested
+          </span>
+        </div>
       </div>
-      <p className="mt-3 text-xs text-muted">
+      <p className="mt-4 text-xs text-muted">
         Swipe or use the buttons — right saves it, left skips it for now (it&apos;ll come back around)
       </p>
     </div>
@@ -125,15 +135,21 @@ function FeedCard({ listing }: { listing: Listing }) {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-3xl border border-border bg-surface shadow-glow">
       <Image src={listing.imageUrl} alt="" fill sizes="384px" className="object-cover" draggable={false} />
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
       <div className="absolute bottom-0 left-0 right-0 p-5">
         <div className="mb-2 flex flex-wrap gap-1.5">
-          <Badge variant="type">{listing.eventType}</Badge>
-          <Badge>{listing.priceLabel}</Badge>
-          {listing.deal && <Badge variant="accent">{listing.deal.label}</Badge>}
+          <Badge variant="type" className="bg-accent-2 text-white uppercase tracking-wide">
+            {listing.eventType}
+          </Badge>
+          <Badge className="bg-white/90 text-foreground uppercase tracking-wide">{listing.priceLabel}</Badge>
+          {listing.deal && (
+            <Badge variant="accent" className="bg-accent-3 text-foreground uppercase tracking-wide">
+              {listing.deal.label}
+            </Badge>
+          )}
         </div>
-        <h2 className="text-xl font-bold text-foreground">{listing.name}</h2>
-        <p className="text-sm text-muted">
+        <h2 className="font-display text-xl font-bold text-white">{listing.name}</h2>
+        <p className="text-sm text-white/80">
           {listing.venue} · {formatDisplayDate(listing.date)} · {listing.time}
         </p>
       </div>
