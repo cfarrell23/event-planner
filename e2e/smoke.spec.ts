@@ -17,6 +17,8 @@ test("sign in -> onboarding -> discover swipe -> RSVP -> shows on planner", asyn
   await page.getByRole("button", { name: "£ Budget-friendly" }).click();
   await page.getByRole("button", { name: "Start exploring" }).click();
 
+  await expect(page).toHaveURL(/\/home$/);
+  await page.getByRole("link", { name: "Discover" }).click();
   await expect(page).toHaveURL(/\/discover$/);
 
   const likeButton = page.getByRole("button", { name: /Mark .* as interested/ });
@@ -49,6 +51,8 @@ test("discover feed loops endlessly past the end of the mock dataset", async ({ 
   await page.getByRole("button", { name: "£ Budget-friendly" }).click();
   await page.getByRole("button", { name: "Start exploring" }).click();
 
+  await expect(page).toHaveURL(/\/home$/);
+  await page.getByRole("link", { name: "Discover" }).click();
   await expect(page).toHaveURL(/\/discover$/);
 
   const skipButton = page.getByRole("button", { name: /^Skip / });

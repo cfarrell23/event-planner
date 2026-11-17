@@ -16,7 +16,7 @@ export default function Home() {
     } else if (!onboarded) {
       router.replace("/onboarding");
     } else {
-      router.replace("/discover");
+      router.replace("/home");
     }
   }, [status, onboarded, router]);
 

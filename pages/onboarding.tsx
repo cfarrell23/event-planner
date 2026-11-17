@@ -40,7 +40,7 @@ export default function Onboarding() {
   function handleSubmit() {
     if (eventTypes.length === 0 || !priceRange) return;
     setPreferences(eventTypes, priceRange);
-    router.replace("/discover");
+    router.replace("/home");
   }
 
   if (status !== "authenticated") {

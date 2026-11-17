@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
-import { CalendarDays, Heart, Sparkles, User, LogOut, Camera } from "lucide-react";
+import { CalendarDays, Heart, Home, Sparkles, User, LogOut, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
+  { href: "/home", label: "Home", icon: Home },
   { href: "/discover", label: "Discover", icon: Sparkles },
   { href: "/interested", label: "Interested", icon: Heart },
   { href: "/planner", label: "Planner", icon: CalendarDays },
@@ -18,7 +19,7 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
-        <Link href="/discover" className="flex min-w-0 items-baseline gap-2">
+        <Link href="/home" className="flex min-w-0 items-baseline gap-2">
           <span className="flex-shrink-0 font-display text-lg font-extrabold tracking-tight text-brand-green">
             Week<span className="text-accent">Ahead</span>
           </span>
@@ -31,7 +32,7 @@ export function NavBar() {
               in the header. It stays a single <nav> so there is exactly one set of
               "Main navigation" links for accessibility tools and the e2e tests. */}
           <nav
-            className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-border bg-surface px-1 py-1.5 sm:static sm:w-auto sm:justify-end sm:gap-1 sm:border-0 sm:bg-transparent sm:p-0"
+            className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-border bg-surface px-0.5 py-1.5 sm:static sm:w-auto sm:justify-end sm:gap-1 sm:border-0 sm:bg-transparent sm:p-0"
             aria-label="Main navigation"
           >
             {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -41,13 +42,13 @@ export function NavBar() {
                   key={href}
                   href={href}
                   className={cn(
-                    "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 text-[11px] font-medium sm:flex-none sm:flex-row sm:gap-1.5 sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm",
+                    "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-0.5 py-1.5 text-[10px] font-medium sm:flex-none sm:flex-row sm:gap-1.5 sm:rounded-full sm:px-3.5 sm:py-2 sm:text-sm",
                     active
                       ? "text-accent sm:bg-accent/15"
                       : "text-muted hover:text-foreground sm:hover:bg-surface-raised",
                   )}
                 >
-                  <Icon size={18} aria-hidden className="sm:hidden" />
+                  <Icon size={17} aria-hidden className="sm:hidden" />
                   <Icon size={16} aria-hidden className="hidden sm:block" />
                   <span>{label}</span>
                 </Link>
@@ -61,14 +62,14 @@ export function NavBar() {
               aria-label="Scan Poster"
               title="Scan Poster"
               className={cn(
-                "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-1.5 sm:ml-0.5 sm:flex-none sm:h-10 sm:w-10 sm:flex-shrink-0 sm:items-center sm:justify-center sm:rounded-full sm:p-0 sm:shadow-glow",
+                "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-0.5 py-1.5 sm:ml-0.5 sm:flex-none sm:h-10 sm:w-10 sm:flex-shrink-0 sm:items-center sm:justify-center sm:rounded-full sm:p-0 sm:shadow-glow",
                 router.pathname.startsWith("/scan")
                   ? "text-accent sm:bg-accent sm:text-white"
                   : "text-muted hover:text-foreground sm:bg-accent/90 sm:text-white sm:hover:bg-accent",
               )}
             >
-              <Camera size={18} aria-hidden />
-              <span className="text-[11px] font-medium sm:hidden">Scan</span>
+              <Camera size={17} aria-hidden />
+              <span className="text-[10px] font-medium sm:hidden">Scan</span>
             </Link>
           </nav>
 
