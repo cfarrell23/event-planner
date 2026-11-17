@@ -3,17 +3,71 @@ import { toIsoDate } from "./utils";
 import type { PriceRange } from "./types";
 
 /**
- * Runs the uploaded/captured poster image through client-side OCR (tesseract.js — no API key,
- * runs entirely in the browser). Dynamically imported so it never loads during SSR. Pass the
- * original file (not a downscaled copy) for the best recognition quality.
+ * Upscales small images, converts to greyscale, and stretches contrast to the full black-white
+ * range. Real poster photos are the OCR engine's hardest case — coloured/photo backgrounds,
+ * uneven lighting, low resolution — and this preprocessing is what most reliably improves
+ * accuracy on them (tested against a synthetic poster is not representative of a real photo).
  */
-export async function recognizePosterText(image: File | string): Promise<string> {
-  const { createWorker } = await import("tesseract.js");
+async function preprocessForOcr(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Could not read file"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Could not decode image"));
+      img.onload = () => {
+        const minDimension = 1600;
+        const scale = Math.max(1, minDimension / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Canvas not supported"));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const { data } = imageData;
+        const luminance = new Float32Array(data.length / 4);
+        let min = 255;
+        let max = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+          luminance[i / 4] = l;
+          if (l < min) min = l;
+          if (l > max) max = l;
+        }
+        const range = Math.max(1, max - min);
+        for (let i = 0; i < data.length; i += 4) {
+          const stretched = ((luminance[i / 4] - min) / range) * 255;
+          data[i] = data[i + 1] = data[i + 2] = stretched;
+        }
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      img.src = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Runs the uploaded/captured poster image through client-side OCR (tesseract.js — no API key,
+ * runs entirely in the browser). Dynamically imported so it never loads during SSR. Preprocesses
+ * the original file (greyscale + contrast stretch + upscale) before recognition, and uses the
+ * sparse-text page segmentation mode since posters are large scattered text blocks, not paragraphs.
+ */
+export async function recognizePosterText(file: File): Promise<string> {
+  const { createWorker, PSM } = await import("tesseract.js");
   const worker = await createWorker("eng");
   try {
+    await worker.setParameters({ tessedit_pageseg_mode: PSM.SPARSE_TEXT });
+    const preprocessed = await preprocessForOcr(file);
     const {
       data: { text },
-    } = await worker.recognize(image);
+    } = await worker.recognize(preprocessed);
     return text;
   } finally {
     await worker.terminate();
