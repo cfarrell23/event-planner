@@ -73,14 +73,25 @@ export default function HomePage() {
     <AppShell>
       {/* Decorative — no location switching or search wired up yet. */}
       <div className="mb-4 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          className="flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground"
-          aria-hidden
-          tabIndex={-1}
-        >
-          Shoreditch <ChevronDown size={14} aria-hidden />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className="flex items-center gap-1 rounded-full border border-border bg-surface px-3 py-1.5 text-sm font-medium text-foreground"
+            aria-hidden
+            tabIndex={-1}
+          >
+            Shoreditch <ChevronDown size={14} aria-hidden />
+          </button>
+          {/* Collapses the day strip below into a single icon on desktop. */}
+          <button
+            type="button"
+            aria-hidden
+            tabIndex={-1}
+            className="hidden h-9 w-9 items-center justify-center rounded-full border border-border bg-surface text-foreground sm:flex"
+          >
+            <Calendar size={16} aria-hidden />
+          </button>
+        </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -139,14 +150,6 @@ export default function HomePage() {
           Any day
         </button>
       </div>
-      <button
-        type="button"
-        aria-hidden
-        tabIndex={-1}
-        className="mb-6 hidden h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground sm:flex"
-      >
-        <Calendar size={18} aria-hidden />
-      </button>
 
       <div className="mb-8 flex items-start justify-between">
         <div>
