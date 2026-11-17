@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { signOut, useSession } from "next-auth/react";
-import { CalendarDays, Heart, Sparkles, User, LogOut } from "lucide-react";
+import { CalendarDays, Heart, Sparkles, User, LogOut, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [
-  { href: "/for-you", label: "For You", icon: Sparkles },
-  { href: "/calendar", label: "Calendar", icon: CalendarDays },
-  { href: "/saved", label: "Saved", icon: Heart },
+  { href: "/discover", label: "Discover", icon: Sparkles },
+  { href: "/interested", label: "Interested", icon: Heart },
+  { href: "/planner", label: "Planner", icon: CalendarDays },
   { href: "/profile", label: "Profile", icon: User },
 ];
 
@@ -18,8 +18,8 @@ export function NavBar() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/for-you" className="text-lg font-bold tracking-tight">
-          <span className="text-accent">Night</span>Planner
+        <Link href="/discover" className="text-lg font-bold tracking-tight">
+          Week<span className="text-accent">Ahead</span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2" aria-label="Main navigation">
           {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -40,6 +40,23 @@ export function NavBar() {
               </Link>
             );
           })}
+
+          {/* Scan Poster is the "real-world capture" entry point — given a distinct, thumb-friendly
+              treatment since it's the product's secondary input mode alongside Discover. */}
+          <Link
+            href="/scan"
+            aria-label="Scan Poster"
+            title="Scan Poster"
+            className={cn(
+              "ml-0.5 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full shadow-glow transition-colors sm:h-10 sm:w-10",
+              router.pathname.startsWith("/scan")
+                ? "bg-accent text-white"
+                : "bg-accent/90 text-white hover:bg-accent",
+            )}
+          >
+            <Camera size={18} aria-hidden />
+          </Link>
+
           {session && (
             <button
               onClick={() => signOut({ callbackUrl: "/signin" })}

@@ -1,10 +1,10 @@
-// Shared domain types for events, restaurants, user preferences, and calendar state.
+// Shared domain types for events, restaurants, scanned posters, preferences, and planner state.
 
 export type EventType = "club" | "gig" | "comedy" | "pop-up";
 
 export type PriceRange = "free" | "low" | "medium" | "high";
 
-export type ListingKind = "event" | "restaurant";
+export type ListingKind = "event" | "restaurant" | "scanned";
 
 export interface Deal {
   label: string;
@@ -52,7 +52,33 @@ export interface RestaurantListing {
   deal?: Deal;
 }
 
-export type Listing = EventListing | RestaurantListing;
+/** A field extracted from a scanned poster, flagged so the user knows what to double-check. */
+export type FieldConfidence = "confident" | "needs-review";
+
+/** A PlanItem captured by photographing or uploading an event poster, rather than pulled from an API. */
+export interface ScannedItem {
+  id: string;
+  kind: "scanned";
+  name: string;
+  eventType: EventType | "restaurant";
+  description: string;
+  date: string;
+  time: string;
+  priceRange: PriceRange;
+  priceLabel: string;
+  venue: string;
+  address: string;
+  lat: number;
+  lng: number;
+  imageUrl: string; // compressed data URL of the captured poster
+  source: "Poster Scan";
+  bookingUrl: string; // detected URL, or "" if none was found
+  deal?: Deal;
+  fieldConfidence: Record<"name" | "date" | "time" | "venue" | "priceLabel", FieldConfidence>;
+  createdAt: string; // ISO datetime
+}
+
+export type Listing = EventListing | RestaurantListing | ScannedItem;
 
 export interface DayForecast {
   date: string; // ISO date

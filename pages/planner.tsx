@@ -6,13 +6,15 @@ import { WeatherBadge } from "@/components/WeatherBadge";
 import { getAllListings } from "@/lib/services/listings";
 import { getWeekForecast } from "@/lib/services/weather";
 import { useCalendarStore } from "@/lib/store/useCalendarStore";
+import { useScannedStore } from "@/lib/store/useScannedStore";
 import { useToastStore } from "@/lib/store/useToastStore";
 import { getCurrentWeekDates, formatDisplayDate } from "@/lib/utils";
 import type { Listing, DayForecast } from "@/lib/types";
 
-export default function CalendarPage() {
-  const [listings, setListings] = useState<Listing[] | null>(null);
+export default function PlannerPage() {
+  const [apiListings, setApiListings] = useState<Listing[] | null>(null);
   const [forecast, setForecast] = useState<DayForecast[] | null>(null);
+  const scannedItems = useScannedStore((s) => s.items);
   const rsvps = useCalendarStore((s) => s.rsvps);
   const cancelRsvp = useCalendarStore((s) => s.cancelRsvp);
   const showToast = useToastStore((s) => s.show);
@@ -20,23 +22,25 @@ export default function CalendarPage() {
   const weekDates = getCurrentWeekDates();
 
   useEffect(() => {
-    getAllListings().then(setListings);
+    getAllListings().then(setApiListings);
     getWeekForecast(weekDates).then(setForecast);
     // weekDates is derived from "today" and intentionally excluded — recomputing per render is fine.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const allListings: Listing[] = [...(apiListings ?? []), ...scannedItems];
+
   return (
     <AppShell>
       <h1 className="mb-1 flex items-center gap-2 text-xl font-bold text-foreground">
-        <CalendarDays size={20} aria-hidden /> This Week
+        <CalendarDays size={20} aria-hidden /> Planner
       </h1>
-      <p className="mb-6 text-sm text-muted">Plans you&apos;ve RSVP&apos;d to, day by day.</p>
+      <p className="mb-6 text-sm text-muted">Plans you&apos;ve RSVP&apos;d to, day by day — this week.</p>
 
       <div className="flex flex-col gap-4">
         {weekDates.map((date) => {
           const dayForecast = forecast?.find((f) => f.date === date);
-          const dayItems = (listings ?? []).filter((l) =>
+          const dayItems = allListings.filter((l) =>
             rsvps.some((r) => r.listingId === l.id && r.date === date),
           );
 
@@ -59,6 +63,7 @@ export default function CalendarPage() {
                     <ListingCard
                       key={listing.id}
                       listing={listing}
+                      showSource
                       removeLabel={`Cancel RSVP for ${listing.name}`}
                       onRemove={() => {
                         cancelRsvp(listing.id);

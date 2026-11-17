@@ -7,10 +7,10 @@ const SwipeFeed = dynamic(() => import("@/components/SwipeFeed").then((m) => m.S
   loading: () => <div className="flex h-[60vh] items-center justify-center text-muted">Loading feed...</div>,
 });
 
-export default function ForYouPage() {
+export default function DiscoverPage() {
   return (
     <AppShell>
-      <h1 className="mb-6 text-xl font-bold text-foreground">For You</h1>
+      <h1 className="mb-6 text-xl font-bold text-foreground">Discover</h1>
       <SwipeFeed />
     </AppShell>
   );
