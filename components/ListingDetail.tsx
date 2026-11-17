@@ -8,7 +8,7 @@ import { ScanReviewForm, type ScanReviewValues } from "@/components/ScanReviewFo
 import { useCalendarStore } from "@/lib/store/useCalendarStore";
 import { useScannedStore } from "@/lib/store/useScannedStore";
 import { useToastStore } from "@/lib/store/useToastStore";
-import { formatDisplayDate } from "@/lib/utils";
+import { cn, formatDisplayDate, getCurrentWeekDates } from "@/lib/utils";
 import { isSafeExternalUrl } from "@/lib/scanUtils";
 import type { Listing } from "@/lib/types";
 
@@ -21,14 +21,21 @@ export function ListingDetail({ listing }: { listing: Listing }) {
   const showToast = useToastStore((s) => s.show);
   const [editing, setEditing] = useState(false);
 
-  function handleRsvpToggle() {
-    if (isRsvped) {
-      cancelRsvp(listing.id);
-      showToast(`Cancelled RSVP for "${listing.name}"`);
-    } else {
-      addRsvp(listing.id, listing.kind, listing.date);
-      showToast(`Added "${listing.name}" to your planner`);
-    }
+  const weekDates = getCurrentWeekDates();
+  const [pickingDay, setPickingDay] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(
+    weekDates.includes(listing.date) ? listing.date : weekDates[0],
+  );
+
+  function handleConfirmRsvp() {
+    addRsvp(listing.id, listing.kind, selectedDate);
+    showToast(`Added "${listing.name}" to your planner for ${formatDisplayDate(selectedDate)}`);
+    setPickingDay(false);
+  }
+
+  function handleCancelRsvp() {
+    cancelRsvp(listing.id);
+    showToast(`Cancelled RSVP for "${listing.name}"`);
   }
 
   function handleSaveEdits(values: ScanReviewValues) {
@@ -108,11 +115,43 @@ export function ListingDetail({ listing }: { listing: Listing }) {
         <MapEmbed address={listing.address} name={listing.venue} />
       </div>
 
+      {pickingDay && !isRsvped && (
+        <div className="mb-5 rounded-2xl border border-border bg-surface p-4">
+          <p className="mb-3 text-sm font-medium text-foreground">Which day should this go on?</p>
+          <div className="mb-4 flex flex-wrap gap-2">
+            {weekDates.map((date) => (
+              <button
+                key={date}
+                type="button"
+                aria-pressed={selectedDate === date}
+                onClick={() => setSelectedDate(date)}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-xs font-medium",
+                  selectedDate === date
+                    ? "border-accent bg-accent/15 text-accent"
+                    : "border-border bg-background text-foreground hover:bg-surface-raised",
+                )}
+              >
+                {formatDisplayDate(date)}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-3">
+            <Button size="sm" onClick={handleConfirmRsvp}>
+              Confirm RSVP
+            </Button>
+            <Button variant="secondary" size="sm" onClick={() => setPickingDay(false)}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button
           variant={isRsvped ? "secondary" : "primary"}
           size="lg"
-          onClick={handleRsvpToggle}
+          onClick={isRsvped ? handleCancelRsvp : () => setPickingDay(true)}
           className="w-full sm:w-auto"
         >
           {isRsvped ? <CalendarX aria-hidden /> : <CalendarPlus aria-hidden />}

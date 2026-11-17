@@ -34,6 +34,9 @@ test("sign in -> onboarding -> discover swipe -> RSVP -> shows on planner", asyn
   const rsvpButton = page.getByRole("button", { name: "RSVP to Planner" });
   await expect(rsvpButton).toBeVisible();
   await rsvpButton.click();
+
+  await expect(page.getByText("Which day should this go on?")).toBeVisible();
+  await page.getByRole("button", { name: "Confirm RSVP" }).click();
   await expect(page.getByRole("button", { name: "Cancel RSVP" })).toBeVisible();
 
   await page.getByRole("link", { name: "Planner" }).click();
