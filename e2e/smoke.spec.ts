@@ -41,6 +41,27 @@ test("sign in -> onboarding -> discover swipe -> RSVP -> shows on planner", asyn
   await expect(page.getByText("Nothing booked for this day.")).toHaveCount(6);
 });
 
+test("discover feed loops endlessly past the end of the mock dataset", async ({ page }) => {
+  await page.goto("/signin");
+  await page.getByRole("button", { name: "Sign in with Google" }).click();
+  await expect(page).toHaveURL(/\/onboarding$/);
+  await page.getByRole("button", { name: "Clubs" }).click();
+  await page.getByRole("button", { name: "£ Budget-friendly" }).click();
+  await page.getByRole("button", { name: "Start exploring" }).click();
+
+  await expect(page).toHaveURL(/\/discover$/);
+
+  const skipButton = page.getByRole("button", { name: /^Skip / });
+  // The mock dataset has 13 listings — skip well past that to prove the feed loops instead of running out.
+  for (let i = 0; i < 20; i++) {
+    await expect(skipButton).toBeVisible({ timeout: 10_000 });
+    await skipButton.click();
+  }
+
+  await expect(page.getByText("You've saved everything")).toHaveCount(0);
+  await expect(skipButton).toBeVisible();
+});
+
 test("scan poster -> review -> save -> appears in Interested with source label", async ({ page }) => {
   await page.goto("/signin");
   await page.getByRole("button", { name: "Sign in with Google" }).click();

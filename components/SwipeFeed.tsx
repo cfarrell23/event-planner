@@ -25,9 +25,8 @@ export function SwipeFeed() {
   const cardRef = useRef<CardRef>(null);
 
   const savedIds = useInterestStore((s) => s.savedIds);
-  const dismissedIds = useInterestStore((s) => s.dismissedIds);
-  const save = useInterestStore((s) => s.save);
   const dismiss = useInterestStore((s) => s.dismiss);
+  const save = useInterestStore((s) => s.save);
   const affinity = useProfileStore((s) => s.affinity);
   const recordLike = useProfileStore((s) => s.recordLike);
   const showToast = useToastStore((s) => s.show);
@@ -36,17 +35,18 @@ export function SwipeFeed() {
     getAllListings().then(setListings);
   }, []);
 
+  // Only saved items leave the pool for good — skipped items loop back around once the lap
+  // completes, so the feed never runs dry (swipe right to permanently retire a card).
   const feed = useMemo(() => {
     if (!listings) return [];
-    const seen = new Set([...savedIds, ...dismissedIds]);
     return listings
-      .filter((l) => !seen.has(l.id))
+      .filter((l) => !savedIds.includes(l.id))
       .sort((a, b) => (affinity[b.eventType] ?? 0) - (affinity[a.eventType] ?? 0));
     // Simple preference weighting: items whose type has more swipe-right history surface first.
-  }, [listings, savedIds, dismissedIds, affinity]);
+  }, [listings, savedIds, affinity]);
 
-  const current = feed[index];
-  const next = feed[index + 1];
+  const current = feed.length > 0 ? feed[index % feed.length] : undefined;
+  const next = feed.length > 1 ? feed[(index + 1) % feed.length] : undefined;
 
   function handleSwipe(dir: SwipeDirection, listing: Listing) {
     if (dir === "right") {
@@ -69,8 +69,8 @@ export function SwipeFeed() {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center gap-2 text-center text-muted">
         <Sparkles aria-hidden />
-        <p className="font-medium text-foreground">You&apos;re all caught up</p>
-        <p className="text-sm">Check back later for more picks, or review what you&apos;ve saved.</p>
+        <p className="font-medium text-foreground">You&apos;ve saved everything</p>
+        <p className="text-sm">Every pick this week is already in your Interested list.</p>
       </div>
     );
   }
@@ -85,7 +85,7 @@ export function SwipeFeed() {
         )}
         <TinderCard
           ref={cardRef}
-          key={current.id}
+          key={`${current.id}-${index}`}
           onSwipe={(dir) => handleSwipe(dir, current)}
           preventSwipe={["up", "down"]}
           className="tinder-swipe-container"
@@ -114,7 +114,9 @@ export function SwipeFeed() {
           <Heart aria-hidden />
         </Button>
       </div>
-      <p className="mt-3 text-xs text-muted">Swipe or use the buttons — right saves, left skips</p>
+      <p className="mt-3 text-xs text-muted">
+        Swipe or use the buttons — right saves it, left skips it for now (it&apos;ll come back around)
+      </p>
     </div>
   );
 }
