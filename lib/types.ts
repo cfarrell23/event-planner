@@ -64,8 +64,8 @@ export interface ScannedItem {
   description: string;
   date: string;
   time: string;
-  priceRange: PriceRange;
-  priceLabel: string;
+  priceRange: PriceRange | null; // null when the poster didn't show a price and the user left it unspecified
+  priceLabel: string; // e.g. "£15", or "Price not listed" when priceRange is null
   venue: string;
   address: string;
   lat: number;

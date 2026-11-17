@@ -60,7 +60,7 @@ export default function ScanPosterPage() {
         venue: "",
         address: "",
         eventType: "pop-up",
-        priceRange: "medium",
+        priceRange: null,
         priceLabel: "",
         bookingUrl: "",
       });

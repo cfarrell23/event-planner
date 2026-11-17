@@ -85,9 +85,15 @@ test("scan poster -> review -> save -> appears in Interested with source label",
   });
   await expect(page.getByLabel("Title")).toHaveValue("Indie Gig Poster");
 
+  // Price defaults to unset and saving without picking one should still succeed.
+  await expect(page.getByRole("button", { name: "Not specified" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   await page.getByRole("button", { name: "Save as Interested" }).click();
 
   await expect(page).toHaveURL(/\/interested$/);
   await expect(page.getByText("Scanned poster")).toBeVisible();
   await expect(page.getByText("Indie Gig Poster")).toBeVisible();
+  await expect(page.getByText("Price not listed")).toBeVisible();
 });

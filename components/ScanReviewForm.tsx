@@ -12,12 +12,20 @@ const EVENT_TYPE_OPTIONS: { value: EventType | "restaurant"; label: string }[] =
   { value: "restaurant", label: "Restaurant" },
 ];
 
-const PRICE_OPTIONS: { value: PriceRange; label: string }[] = [
+const PRICE_OPTIONS: { value: PriceRange | null; label: string }[] = [
+  { value: null, label: "Not specified" },
   { value: "free", label: "Free" },
   { value: "low", label: "£" },
   { value: "medium", label: "££" },
   { value: "high", label: "£££" },
 ];
+
+const PRICE_LABELS: Record<PriceRange, string> = {
+  free: "Free",
+  low: "£",
+  medium: "££",
+  high: "£££",
+};
 
 export interface ScanReviewValues {
   name: string;
@@ -26,7 +34,7 @@ export interface ScanReviewValues {
   venue: string;
   address: string;
   eventType: EventType | "restaurant";
-  priceRange: PriceRange;
+  priceRange: PriceRange | null;
   priceLabel: string;
   bookingUrl: string;
 }
@@ -143,12 +151,12 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
 
       <div>
         <span className="mb-2 block text-sm font-medium text-foreground">
-          Price <NeedsReview field="priceLabel" />
+          Price <span className="text-muted">(optional)</span> <NeedsReview field="priceLabel" />
         </span>
         <div className="flex flex-wrap gap-2">
           {PRICE_OPTIONS.map((opt) => (
             <button
-              key={opt.value}
+              key={opt.label}
               type="button"
               aria-pressed={values.priceRange === opt.value}
               onClick={() => set("priceRange", opt.value)}
@@ -185,14 +193,7 @@ export function ScanReviewForm({ initialValues, fieldConfidence, onSave, onCance
             onSave({
               ...values,
               priceLabel:
-                values.priceLabel ||
-                (values.priceRange === "free"
-                  ? "Free"
-                  : values.priceRange === "low"
-                    ? "£"
-                    : values.priceRange === "medium"
-                      ? "££"
-                      : "£££"),
+                values.priceRange === null ? "Price not listed" : PRICE_LABELS[values.priceRange],
             })
           }
         >
