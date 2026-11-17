@@ -8,7 +8,7 @@ import { getAllListings } from "@/lib/services/listings";
 import { useInterestStore } from "@/lib/store/useInterestStore";
 import { useProfileStore } from "@/lib/store/useProfileStore";
 import { useToastStore } from "@/lib/store/useToastStore";
-import { formatDisplayDate } from "@/lib/utils";
+import { cn, formatDisplayDate } from "@/lib/utils";
 import type { Listing } from "@/lib/types";
 
 type SwipeDirection = "left" | "right" | "up" | "down";
@@ -18,8 +18,13 @@ interface CardRef {
   restoreCard: () => Promise<void>;
 }
 
-/** Swipeable "For You" discovery feed. Client-only — react-tinder-card touches the DOM on mount. */
-export function SwipeFeed() {
+/**
+ * Swipeable "For You" discovery feed. Client-only — react-tinder-card touches the DOM on mount.
+ * `compact` renders a smaller, horizontal card on desktop (used when embedded in the Home page
+ * alongside other sections); mobile sizing is unchanged either way, as is the standalone
+ * /discover page, which never passes `compact`.
+ */
+export function SwipeFeed({ compact = false }: { compact?: boolean } = {}) {
   const [listings, setListings] = useState<Listing[] | null>(null);
   const [index, setIndex] = useState(0);
   const cardRef = useRef<CardRef>(null);
@@ -76,11 +81,11 @@ export function SwipeFeed() {
   }
 
   return (
-    <div className="mx-auto flex max-w-sm flex-col items-center">
-      <div className="relative h-[520px] w-full">
+    <div className={cn("mx-auto flex max-w-sm flex-col items-center", compact && "sm:max-w-2xl")}>
+      <div className={cn("relative h-[520px] w-full", compact && "sm:h-48")}>
         {next && (
           <div className="absolute inset-0 scale-95 rounded-3xl opacity-60">
-            <FeedCard listing={next} />
+            <FeedCard listing={next} compact={compact} />
           </div>
         )}
         <TinderCard
@@ -90,11 +95,11 @@ export function SwipeFeed() {
           preventSwipe={["up", "down"]}
           className="tinder-swipe-container"
         >
-          <FeedCard listing={current} />
+          <FeedCard listing={current} compact={compact} />
         </TinderCard>
       </div>
 
-      <div className="mt-6 flex items-start gap-10">
+      <div className={cn("mt-6 flex items-start gap-10", compact && "sm:mt-4")}>
         <div className="flex flex-col items-center gap-2">
           <Button
             variant="secondary"
@@ -131,13 +136,13 @@ export function SwipeFeed() {
   );
 }
 
-function FeedCard({ listing }: { listing: Listing }) {
+function FeedCard({ listing, compact = false }: { listing: Listing; compact?: boolean }) {
   return (
     <div className="relative h-full w-full overflow-hidden rounded-3xl border border-border bg-surface shadow-glow">
-      <Image src={listing.imageUrl} alt="" fill sizes="384px" className="object-cover" draggable={false} />
+      <Image src={listing.imageUrl} alt="" fill sizes="(min-width: 640px) 672px, 384px" className="object-cover" draggable={false} />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 p-5">
-        <div className="mb-2 flex flex-wrap gap-1.5">
+      <div className={cn("absolute bottom-0 left-0 right-0 p-5", compact && "sm:p-3")}>
+        <div className={cn("mb-2 flex flex-wrap gap-1.5", compact && "sm:mb-1")}>
           <Badge variant="type" className="bg-accent-2 text-white uppercase tracking-wide">
             {listing.eventType}
           </Badge>
@@ -148,8 +153,10 @@ function FeedCard({ listing }: { listing: Listing }) {
             </Badge>
           )}
         </div>
-        <h2 className="font-display text-xl font-bold text-white">{listing.name}</h2>
-        <p className="text-sm text-white/80">
+        <h2 className={cn("font-display text-xl font-bold text-white", compact && "sm:text-base")}>
+          {listing.name}
+        </h2>
+        <p className={cn("text-sm text-white/80", compact && "sm:text-xs")}>
           {listing.venue} · {formatDisplayDate(listing.date)} · {listing.time}
         </p>
       </div>

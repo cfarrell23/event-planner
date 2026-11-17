@@ -106,8 +106,9 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Decorative — doesn't filter the sections below yet. */}
-      <div className="mb-6 flex gap-2 overflow-x-auto pb-1">
+      {/* Decorative — doesn't filter the sections below yet. Collapses to a single calendar
+          icon on desktop, where a full week of day-chips takes up space without adding much. */}
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-1 sm:hidden">
         {weekDates.map((date, i) => {
           const d = new Date(`${date}T00:00:00`);
           const active = selectedDate === date;
@@ -138,6 +139,14 @@ export default function HomePage() {
           Any day
         </button>
       </div>
+      <button
+        type="button"
+        aria-hidden
+        tabIndex={-1}
+        className="mb-6 hidden h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-foreground sm:flex"
+      >
+        <Calendar size={18} aria-hidden />
+      </button>
 
       <div className="mb-8 flex items-start justify-between">
         <div>
@@ -146,7 +155,7 @@ export default function HomePage() {
         </div>
       </div>
       <div className="mb-10">
-        <SwipeFeed />
+        <SwipeFeed compact />
       </div>
 
       {listings === null || sections === null ? (
